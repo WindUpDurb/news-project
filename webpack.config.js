@@ -7,30 +7,30 @@ const BundleTracker = require("webpack-bundle-tracker");
 
 module.exports = {
     context: __dirname,
-    entry: './assets/js/index',
+    entry: [
+        'webpack-dev-server/client?http://localhost:3000',
+        'webpack/hot/only-dev-server',
+        './assets/js/index'
+    ],
 
     output: {
         path: path.resolve('./assets/BUNDLES/'),
-        filename: '[name]-[hash].js',
+        filename: 'bundle.js',
+        publicPath: 'http://localhost:3000/assets/BUNDLES/'
     },
 
     plugins: [
         new BundleTracker({filename: './webpack-stats.json'}),
-        new webpack.ProvidePlugin({
-            $: 'jquery',
-            jQuery: 'jquery',
-            'window.jQuery': 'jquery'
-        })
+        new webpack.HotModuleReplacementPlugin(),
+        new webpack.NoErrorsPlugin()
     ],
 
     module: {
         loaders: [
-            {test: /\.jsx?$/,
-                exclude: /node_modules/,
-                loader: 'babel-loader',
-                query: {
-                    presets: ['react']
-                }
+            {
+                test: /\.js$/,
+                loaders: ['react-hot', 'babel'],
+                exclude: /node_modules/
             }
         ]
     },
